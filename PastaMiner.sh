@@ -143,7 +143,8 @@ echo "Done!"
 echo "Configuring config.txt file..."
 nb_cpu_to_allocate=$1
 nb_cpu_start=0
-nb_cpu_stop=$(($nb_cpu_start+$nb_cpu_to_allocate-1))
+nb_cpu_stop=$(($nb_cpu_start+$nb_cpu_to_allocate-2))
+echo "CPU STOP : " $nb_cpu_stop
 sed -i '/* "cpu_threads_conf" :/d' ./pastaminer_worker/config.txt #remove line
 sed -i '/* \[/d' ./pastaminer_worker/config.txt #remove line
 sed -i '/* \],/d' ./pastaminer_worker/config.txt #remove line
@@ -157,21 +158,19 @@ echo "[DEBUG] Beginning loop..."
 #read a #TEST
 for i in $(seq $nb_cpu_start $nb_cpu_stop)
 do
-	if [ "$i" -eq "0" ]; then
-		j=0
-	else
-		j=$(($i-1))
-	fi
-	echo "check $j and replace by $i"
-	#sed -i 's/\[/\[\n { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' config.txt
-	#echo "{ "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : $i },"
-	echo "REPLACE LINE $i"
-	#sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/' ./pastaminer_worker/config.txt
+	#if [ "$i" -eq "0" ]; then
+	#	j=0
+	#else
+	#	j=$(($i-1))
+	#fi
+	j=$(($i+1))
+	echo "check $i and replace by $j"
+	sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/' ./pastaminer_worker/config.txt
 done
 echo "[DEBUG] Loop ended."
 #read a #TEST
 
-sed -i 's/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_stop' },/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_stop' },\n\],/' ./pastaminer_worker/config.txt
+sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n\],/' ./pastaminer_worker/config.txt
 
 sed -i '/"pool_address" : "pool.usxmrpool.com:3333"/c\"pool_address" : "pool.minexmr.com:7777",' ./pastaminer_worker/config.txt
 sed -i '/"wallet_address" : "",/c\"wallet_address" : "'"$monero_wallet"'",' ./pastaminer_worker/config.txt
