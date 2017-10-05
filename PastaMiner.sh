@@ -72,14 +72,16 @@ esac
 function _remove_pastaminer () {
 rm -rf ./xmr-stak-cpu
 rm -rf .flags
-rm -rf ./pastaminer_worker
+rm -rf ./pastaminer-*
 echo "Remove complete !"
 echo "See you soon, bye."
 echo
 }
 
 function _remove_worker () {
-rm -rf ./pastaminer_worker
+echo "NEED UPDATE"
+exit
+rm -rf ./pastaminer
 echo "Worker removed !"
 _main_menu
 }
@@ -122,10 +124,22 @@ echo "Ok, $nbthreads seems good !"
 echo
 }
 
+function _ask_worker_name () {
+UUID=$RANDOM
+read -p "How do you want to name your worker ? (if not pastaminer-$UUID will be used)" worker_name
+if [ "$worker_name" == "" ]; then
+	worker_name="pastaminer-$UUID"
+	echo "So let's use $worker_name"
+else
+	echo "What a beautiful name ! "
+fi
+}
+
 function _ask_create_worker () {
 echo "I have everything I need to create your first worker !"
 echo "Monero Wallet : $monero_wallet"
 echo "Threads allocated : $nbthreads"
+echo "Worker name : $worker_name"
 echo
 read -p "Would you like to create it now ? [y/n] " confirmation
 case "$confirmation" in
@@ -137,24 +151,24 @@ esac
 
 function _create_worker () {
 echo "Copying XMR Stak CPU..."
-mkdir -p pastaminer_worker
-cp xmr-stak-cpu/bin/* pastaminer_worker
+mkdir -p $worker_name
+cp xmr-stak-cpu/bin/* $worker_name
 echo "Done!"
+echo
 echo "Configuring config.txt file..."
 nb_cpu_to_allocate=$1
 nb_cpu_start=0
 nb_cpu_stop=$(($nb_cpu_start+$nb_cpu_to_allocate-2))
 echo "CPU STOP : " $nb_cpu_stop
-sed -i '/* "cpu_threads_conf" :/d' ./pastaminer_worker/config.txt #remove line
-sed -i '/* \[/d' ./pastaminer_worker/config.txt #remove line
-sed -i '/* \],/d' ./pastaminer_worker/config.txt #remove line
-sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 0 },/d' ./pastaminer_worker/config.txt
-sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 1 },/d' ./pastaminer_worker/config.txt
-sed -i '/"cpu_threads_conf" :/{n;d}' ./pastaminer_worker/config.txt #remove line : null,
-sed -i '/"cpu_threads_conf" :/a [' ./pastaminer_worker/config.txt
-sed -i 's/\[/\[\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' ./pastaminer_worker/config.txt
-echo "done."
-echo "[DEBUG] Beginning loop..."
+sed -i '/* "cpu_threads_conf" :/d' ./$worker_name/config.txt #remove line
+sed -i '/* \[/d' ./$worker_name/config.txt #remove line
+sed -i '/* \],/d' ./$worker_name/config.txt #remove line
+sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 0 },/d' ./$worker_name/config.txt
+sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 1 },/d' ./$worker_name/config.txt
+sed -i '/"cpu_threads_conf" :/{n;d}' ./$worker_name/config.txt #remove line : null,
+sed -i '/"cpu_threads_conf" :/a [' ./$worker_name/config.txt
+sed -i 's/\[/\[\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' ./$worker_name/config.txt
+#echo "[DEBUG] Beginning loop..."
 #read a #TEST
 for i in $(seq $nb_cpu_start $nb_cpu_stop)
 do
@@ -164,18 +178,23 @@ do
 	#	j=$(($i-1))
 	#fi
 	j=$(($i+1))
-	echo "check $i and replace by $j"
-	sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/' ./pastaminer_worker/config.txt
+	#echo "check $i and replace by $j"
+	sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/' ./$worker_name/config.txt
 done
-echo "[DEBUG] Loop ended."
+#echo "[DEBUG] Loop ended."
 #read a #TEST
 
-sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n\],/' ./pastaminer_worker/config.txt
+sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n\],/' ./$worker_name/config.txt
 
-sed -i '/"pool_address" : "pool.usxmrpool.com:3333"/c\"pool_address" : "pool.minexmr.com:7777",' ./pastaminer_worker/config.txt
-sed -i '/"wallet_address" : "",/c\"wallet_address" : "'"$monero_wallet"'",' ./pastaminer_worker/config.txt
-sed -i '/"pool_password" : "",/c\"pool_password" : "x",' ./pastaminer_worker/config.txt
+sed -i '/"pool_address" : "pool.usxmrpool.com:3333"/c\"pool_address" : "pool.minexmr.com:7777",' ./$worker_name/config.txt
+sed -i '/"wallet_address" : "",/c\"wallet_address" : "'"$monero_wallet"'",' ./$worker_name/config.txt
+sed -i '/"pool_password" : "",/c\"pool_password" : "x",' ./$worker_name/config.txt
 echo "Done !"
+echo
+echo "Your worker $worker_name is ready to mine !"
+echo "Return the main menu to start it !"
+echo
+_main_menu
 }
 
 function ask_configure_easy () {
@@ -186,6 +205,7 @@ echo "That's all ! -the default miner pool is http://minexmr.com-"
 echo
 _ask_wallet
 _ask_nb_threads
+_ask_worker_name
 _ask_create_worker
 }
 
