@@ -69,11 +69,20 @@ case "$choice" in
 esac
 }
 
+function _remove_pastaminer () {
+rm -rf ./xmr-stak-cpu
+rm -rf .flags
+rm -rf ./pastaminer_worker
+echo "Remove complete !"
+echo "See you soon, bye."
+echo
+}
+
 function _main_menu () {
 echo
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state)"
-echo "3) Uninstall PastaMiner (could be reinstalled in 1mn)"
+echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
 echo "4) Enable Plex streams watcher"
 echo
 echo "0) Exit."
@@ -82,7 +91,7 @@ read -p "What do you want do ? " choice
 case "$choice" in
 	1 ) echo;ask_configure_easy;;
 	2 ) echo "Start PastaMiner !";;
-	3 ) echo "Stop PastaMiner !";;
+	3 ) _remove_pastaminer;;
 	4 ) echo "Uninstall PastaMiner !";;
 	0 ) echo "See you next time !";exit;;
 esac
@@ -129,14 +138,14 @@ echo "Configuring config.txt file..."
 nb_cpu_to_allocate=3
 nb_cpu_start=0
 nb_cpu_stop=$(($nb_cpu_start+$nb_cpu_to_allocate-1))
-sed -i '/* "cpu_threads_conf" :/d' ./config.txt #remove line
-sed -i '/* \[/d' ./config.txt #remove line
-sed -i '/* \],/d' ./config.txt #remove line
-sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 0 },/d' ./config.txt
-sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 1 },/d' ./config.txt
-sed -i '/"cpu_threads_conf" :/{n;d}' ./config.txt #remove line : null,
-sed -i '/"cpu_threads_conf" :/a [' ./config.txt
-sed -i 's/\[/\[\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' config.txt
+sed -i '/* "cpu_threads_conf" :/d' ./pastaminer_worker/config.txt #remove line
+sed -i '/* \[/d' ./pastaminer_worker/config.txt #remove line
+sed -i '/* \],/d' ./pastaminer_worker/config.txt #remove line
+sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 0 },/d' ./pastaminer_worker/config.txt
+sed -i '/ * { "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : 1 },/d' ./pastaminer_worker/config.txt
+sed -i '/"cpu_threads_conf" :/{n;d}' ./pastaminer_worker/config.txt #remove line : null,
+sed -i '/"cpu_threads_conf" :/a [' ./pastaminer_worker/config.txt
+sed -i 's/\[/\[\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' ./pastaminer_worker/config.txt
 echo "done."
 for i in $(seq $nbstart $nb_cpu_stop)
 do
@@ -148,10 +157,10 @@ do
 	echo "check $j and replace by $i"
 	#sed -i 's/\[/\[\n { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_start' },/' config.txt
 	#echo "{ "low_power_mode" : false, "no_prefetch" : true, "affine_to_cpu" : $i },"
-	sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/' config.txt
+	sed -i 's/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },/      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$j' },\n      { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$i' },/' ./pastaminer_worker/config.txt
 done
 
-sed -i 's/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 2 },/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_stop' },\n\],/' config.txt
+sed -i 's/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : 2 },/ { "low_power_mode" : false, "no_prefetch" : false, "affine_to_cpu" : '$nb_cpu_stop' },\n\],/' ./pastaminer_worker/config.txt
 echo "Done !"
 }
 
