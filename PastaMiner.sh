@@ -89,7 +89,7 @@ _main_menu
 function _main_menu () {
 echo
 echo "1) Configure PastaMiner (easy/advanced)"
-echo "2) Manage PastaMiner workers (start/stop/state)"
+echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
 echo "4) Enable Plex streams watcher"
 echo
@@ -98,11 +98,17 @@ echo
 read -p "What do you want do ? " choice
 case "$choice" in
 	1 ) echo;ask_configure_easy;;
-	2 ) _remove_worker;;
+	2 ) echo;_ask_manage_worker;;
 	3 ) _remove_pastaminer;;
 	4 ) echo "Uninstall PastaMiner !";;
 	0 ) echo "See you next time !";exit;;
 esac
+}
+
+function _ask_manage_worker () {
+echo "List of your workers :"
+
+exit
 }
 
 function _ask_wallet () {
