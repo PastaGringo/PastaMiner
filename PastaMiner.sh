@@ -133,7 +133,43 @@ if [ "$workerchoice" == "" ]; then
 	echo "No value selected"
 else
 	echo "You choose ${workers_array[$indexminus1]}"
+	workerchoicename="${workers_array[$indexminus1]}"
+	_ask_worker_action
 fi
+}
+
+function _ask_worker_action () {
+echo
+echo "1) Start worker"
+echo "2) Stop worker"
+echo "3) Status worker"
+echo "4) Delete worker"
+echo
+read -p "What do you want to do for $workerchoicename ?" workeraction
+_worker_action
+}
+
+function _worker_action () {
+case "$workeraction" in
+	1 ) echo;_worker_start $workerchoicename;;
+	2 ) echo "Stopping it !";;
+	3 ) echo "Status";;
+	4 ) echo "Deleting it !";;
+esac
+}
+
+function _worker_start (){
+worker_screen_list=$(screen -ls)
+echo "Starting worker $workerchoicename..."
+echo
+cd $workerchoicename
+screen -dmS $workerchoicename ./xmr-stak-cpu
+if [[ $(screen -ls) == *"$workerchoicename"* ]]; then
+	echo "$workerchoicename has been started !"
+else
+	echo "$workerchoicename has NOT been started !"
+fi
+_main_menu
 }
 
 function _ask_wallet () {
