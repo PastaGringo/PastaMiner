@@ -92,7 +92,7 @@ echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
 echo "4) Enable Plex streams watcher"
-echo
+echo "5) Show active workers"
 echo "0) Exit."
 echo
 read -p "What do you want do ? " choice
