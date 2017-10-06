@@ -101,15 +101,24 @@ fi
 echo
 }
 
+function _check_state () {
+if [[ $(screen -ls) == *"$1"* ]]; then
+	state=$(echo -e "\e[32mRUNNING\e[39m")
+else
+	state=$(echo -e "\e[31mNOT RUNNING\e[39m")
+fi
+#echo "$1 is $state"
+}
+
 function _worker_status_widget () {
 workers=$(ls | grep "pastaminer")
-
 if [ ! "$workers" == "" ]; then
 	#echo "-------------------------------------------------------------------------------------------------------------------------------------------------------"
 	echo "  Worker name		  Status	  Miner pool	  Wallet                                                                             "
 	echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------"
 	for worker in $workers; do
-	echo "| $worker	|            	|            	| 42JXhguWtPrNrEyzRD5qE5eA8SZ8rdH3zcS9i4XMECgu4c9k92RHosnEibdpPcLsbYKDaQKMajUDzD54YdToGxbz3YchfPz |"
+	_check_state $worker
+	echo "| $worker	| $state	|            	| 42JXhguWtPrNrEyzRD5qE5eA8SZ8rdH3zcS9i4XMECgu4c9k92RHosnEibdpPcLsbYKDaQKMajUDzD54YdToGxbz3YchfPz |"
 	echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
 else
@@ -121,7 +130,7 @@ echo
 function _main_menu () {
 clear
 _show_ascii
-_worker_status_from_main_menu
+#_worker_status_from_main_menu
 _worker_status_widget
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
@@ -199,6 +208,7 @@ if [[ $(screen -ls) == *"$1"* ]]; then
 else
 	echo "Worker $1 is NOT RUNNING"
 fi
+_main_menu
 }
 
 function ask_worker_delete () {
@@ -245,6 +255,7 @@ if [[ $(screen -ls) == *"$1"* ]]; then
 else
 	echo "There is no ACTIVE worker called $1"
 fi
+_main_menu
 }
 
 function _ask_wallet () {
@@ -385,14 +396,16 @@ rm -rf xmr-stak-cpu
 #MAIN MENU
 #echo Welcome to PastaMiner.sh !
 function _show_ascii () {
-echo '     __          _               _                  '
-echo '   / _ \__ _ ___| |_ __ _  /\/\ (_)_ __   ___ _ __  '
-echo '  / /_)/ _` / __| __/ _  |/    \| |  _ \ / _ \  __| '
-echo ' / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |    '
-echo ' \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|    '
+echo '							     __          _               _                  '
+echo '							   / _ \__ _ ___| |_ __ _  /\/\ (_)_ __   ___ _ __  '
+echo '							  / /_)/ _` / __| __/ _  |/    \| |  _ \ / _ \  __| '
+echo '							 / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |    '
+echo '							 \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|    '
 echo
 }
 
+clear
+_show_ascii
 _create_log_file
 _check_xmr_stak_cpu_state
 #_ask_build_xmr_stak_cpu
