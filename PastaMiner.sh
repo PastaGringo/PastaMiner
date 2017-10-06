@@ -153,9 +153,34 @@ function _worker_action () {
 case "$workeraction" in
 	1 ) echo;_worker_start $workerchoicename;;
 	2 ) echo;_worker_stop $workerchoicename;;
-	3 ) echo "Status";;
-	4 ) echo "Deleting it !";;
+	3 ) echo;_worker_status $workerchoicename;;
+	4 ) echo;ask_worker_delete $workerchoicename;;
 esac
+}
+
+function _worker_status () {
+if [[ $(screen -ls) == *"$1"* ]]; then
+	echo "Worker $1 is RUNNING"
+else
+	echo "Worker $1 is NOT RUNNING"
+fi
+}
+
+function ask_worker_delete () {
+read -p "Are you absolutely sure that you want delete $1 ? [y/n] " choice
+case "$choice" in
+	y|Y ) echo; _worker_delete $1;;
+	n|N ) echo;echo "I don't do nothing.";;
+	* ) echo WRONG;;
+esac
+}
+
+function _worker_delete () {
+_worker_stop $1
+echo "Deleting worker $1"
+rm -rf $1
+echo "Worker $1 has been DELETED."
+_main_menu
 }
 
 function _worker_start () {
