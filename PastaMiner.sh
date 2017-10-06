@@ -152,24 +152,39 @@ _worker_action
 function _worker_action () {
 case "$workeraction" in
 	1 ) echo;_worker_start $workerchoicename;;
-	2 ) echo "Stopping it !";;
+	2 ) echo;_worker_stop $workerchoicename;;
 	3 ) echo "Status";;
 	4 ) echo "Deleting it !";;
 esac
 }
 
-function _worker_start (){
+function _worker_start () {
 worker_screen_list=$(screen -ls)
 echo "Starting worker $workerchoicename..."
 echo
-cd $workerchoicename
-screen -dmS $workerchoicename ./xmr-stak-cpu
-if [[ $(screen -ls) == *"$workerchoicename"* ]]; then
+cd $1
+screen -dmS $1 ./xmr-stak-cpu
+if [[ $(screen -ls) == *"$1"* ]]; then
 	echo "$workerchoicename has been started !"
 else
 	echo "$workerchoicename has NOT been started !"
 fi
 _main_menu
+}
+
+function _worker_stop () {
+if [[ $(screen -ls) == *"$1"* ]]; then
+	echo "$1 has been found."
+	echo "Killing it..."
+	screen -X -S $1 kill
+	if [[ ! $(screen -ls) == *"$1"* ]]; then
+		echo "$1 has been stopped !"
+	else
+		echo "[ERROR]I can't kill it... !"
+	fi
+else
+	echo "There is no ACTIVE worker called $1"
+fi
 }
 
 function _ask_wallet () {
