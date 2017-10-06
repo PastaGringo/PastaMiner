@@ -1,5 +1,4 @@
 #!/bin/bash
-clear
 echo
 #currentdir=$(pwd)
 #echo $currentdir
@@ -91,6 +90,8 @@ _main_menu
 }
 
 function _main_menu () {
+clear
+_show_ascii
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
@@ -352,12 +353,15 @@ rm -rf xmr-stak-cpu
 
 #MAIN MENU
 #echo Welcome to PastaMiner.sh !
-echo "    ___          _               _                 "
-echo "   / _ \__ _ ___| |_ __ _  /\/\ (_)_ __   ___ _ __ "
-echo "  / /_)/ _` / __| __/ _` |/    \| | '_ \ / _ \ '__|"
-echo " / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |   "
-echo " \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|   "
+function _show_ascii () {
+echo '     __          _               _                  '
+echo '   / _ \__ _ ___| |_ __ _  /\/\ (_)_ __   ___ _ __  '
+echo '  / /_)/ _` / __| __/ _  |/    \| |  _ \ / _ \  __| '
+echo ' / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |    '
+echo ' \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|    '
 echo
+}
+
 _create_log_file
 _check_xmr_stak_cpu_state
 #_ask_build_xmr_stak_cpu
