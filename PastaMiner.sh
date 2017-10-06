@@ -11,21 +11,25 @@ function _create_log_file () {
 if [ ! -d .flags ]; then
 	mkdir .flags
 else
-	echo "[DEBUG] Dossier flags existant!"
+	#echo "[DEBUG] Dossier flags existant!"
+	flags=ok
 fi
 }
 
 function _check_xmr_stak_cpu_state () {
 if [ -f ./.flags/downloaded ]; then
-	echo "[DEBUG] XMR Stak CPU downloaded !"
+	#echo "[DEBUG] XMR Stak CPU downloaded !"
+	downloaded=ok
 else
-	echo "[DEBUG] XMR Stak CPU NOT downloaded !"
+	#echo "[DEBUG] XMR Stak CPU NOT downloaded !"
+	downloaded=ko
 fi
 if [ -f ./.flags/built ]; then
-	echo "[DEBUG] XMR Stak CPU built !"
+	#echo "[DEBUG] XMR Stak CPU built !"
+	built=ok
 else
-	echo "[DEBUG] XMR Stak CPU NOT built !"
-	echo "[DEBUG] XMR Stak CPU not downloaded and built."
+	#echo "[DEBUG] XMR Stak CPU NOT built !"
+	#echo "[DEBUG] XMR Stak CPU not downloaded and built."
 	_ask_xmr_stak_cpu
 fi
 }
@@ -87,7 +91,6 @@ _main_menu
 }
 
 function _main_menu () {
-echo
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
