@@ -107,16 +107,24 @@ esac
 
 function _ask_manage_worker () {
 workers_array=()
-for worker in $(ls | grep "pastaminer"); do
+workers=$(ls | grep "pastaminer")
+
+if [ "$workers" == "" ]; then
+	echo "You don't have any worker, let's create one !"
+	echo;ask_configure_easy
+fi
+
+for worker in $workers; do
 	#echo "Ajout de $worker au tableau"
 	workers_array+=($worker)
 	#echo "Ajouté"
 done
-echo "Tableau :"
+echo "List of your workers :"
 for index in "${!workers_array[@]}"; do
 	indexplus1=$(( $index+1 ))
 	echo "$indexplus1) ${workers_array[index]}"
 done
+echo
 read -p "Which worker do you want to manage ?" workerchoice
 
 indexminus1=$(($workerchoice-1))
