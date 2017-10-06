@@ -89,9 +89,39 @@ echo "Worker removed !"
 _main_menu
 }
 
+function _worker_status_from_main_menu () {
+echo
+if [[ $(screen -ls) == *"pastaminer"* ]]; then
+	echo "Current active workers :"
+	active_workers=$(screen -ls| grep "pastaminer")
+	echo -e "\e[32m$active_workers\e[39m"
+else
+	echo "There is no active worker."
+fi
+echo
+}
+
+function _worker_status_widget () {
+workers=$(ls | grep "pastaminer")
+if [ ! "$workers" == "" ]; then
+	echo "-------------------------------------------------------------------------------------------------------------------------------------------------"
+	echo "| Worker name		| Status	| Miner pool	| Wallet                                                                               -"
+	echo "-------------------------------------------------------------------------------------------------------------------------------------------------"
+	for worker in $workers; do
+	echo "| $worker       		|            	|            	| 42JXhguWtPrNrEyzRD5qE5eA8SZ8rdH3zcS9i4XMECgu4c9k92RHosnEibdpPcLsbYKDaQKMajUDzD54YdToGxbz3YchfPz -"
+	echo "-------------------------------------------------------------------------------------------------------------------------------------------------"
+	done
+else
+	echo "There is no active worker."
+fi
+echo
+}
+
 function _main_menu () {
 clear
 _show_ascii
+_worker_status_from_main_menu
+_worker_status_widget
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
