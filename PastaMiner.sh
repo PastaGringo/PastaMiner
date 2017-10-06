@@ -106,9 +106,26 @@ esac
 }
 
 function _ask_manage_worker () {
-echo "List of your workers :"
+workers_array=()
+for worker in $(ls | grep "pastaminer"); do
+	#echo "Ajout de $worker au tableau"
+	workers_array+=($worker)
+	#echo "Ajouté"
+done
+echo "Tableau :"
+for index in "${!workers_array[@]}"; do
+	indexplus1=$(( $index+1 ))
+	echo "$indexplus1) ${workers_array[index]}"
+done
+read -p "Which worker do you want to manage ?" workerchoice
 
-exit
+indexminus1=$(($workerchoice-1))
+
+if [ "$workerchoice" == "" ]; then
+	echo "No value selected"
+else
+	echo "You choose ${workers_array[$indexminus1]}"
+fi
 }
 
 function _ask_wallet () {
