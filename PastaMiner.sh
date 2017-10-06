@@ -351,8 +351,12 @@ rm -rf xmr-stak-cpu
 }
 
 #MAIN MENU
-
-echo Welcome to PastaMiner.sh !
+#echo Welcome to PastaMiner.sh !
+echo "    ___          _               _                 "
+echo "   / _ \__ _ ___| |_ __ _  /\/\ (_)_ __   ___ _ __ "
+echo "  / /_)/ _` / __| __/ _` |/    \| | '_ \ / _ \ '__|"
+echo " / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |   "
+echo " \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|   "
 echo
 _create_log_file
 _check_xmr_stak_cpu_state
