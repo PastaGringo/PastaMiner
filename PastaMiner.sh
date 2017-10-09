@@ -204,7 +204,7 @@ if [ ! "$workers" == "" ]; then
 	echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------"
 	for worker in $workers; do
 	_check_state $worker
-	echo "| $worker	| $state	|            	| 42JXhguWtPrNrEyzRD5qE5eA8SZ8rdH3zcS9i4XMECgu4c9k92RHosnEibdpPcLsbYKDaQKMajUDzD54YdToGxbz3YchfPz |"
+	echo "| $worker	| $state	|            	|                                                                                                 |"
 	echo "-----------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
 else
