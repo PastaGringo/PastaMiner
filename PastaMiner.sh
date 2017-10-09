@@ -6,7 +6,7 @@ echo
 #echo $xmrstakcpudir
 #echo $xmrstakcpudir
 
-version="b0.003"
+version="b0.004"
 
 function _check_updates () {
 echo
@@ -309,6 +309,7 @@ esac
 }
 
 function _worker_delete () {
+echo HERE
 _worker_stop $1
 echo "Deleting worker $1"
 rm -rf $1
@@ -337,13 +338,14 @@ if [[ $(screen -ls) == *"$1"* ]]; then
 	screen -X -S $1 kill
 	if [[ ! $(screen -ls) == *"$1"* ]]; then
 		echo "$1 has been stopped !"
+		_main_menu
 	else
 		echo "[ERROR]I can't kill it... !"
+		_main_menu
 	fi
 else
 	echo "There is no ACTIVE worker called $1"
 fi
-_main_menu
 }
 
 function _ask_wallet () {
