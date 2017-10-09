@@ -6,12 +6,14 @@ echo
 #echo $xmrstakcpudir
 #echo $xmrstakcpudir
 
+version="b0.002"
+
 function _check_updates () {
 echo
 echo "Currenlty no checking function..."
 echo "Downloading latest PastaMiner.sh version..."
-rm ./PastaMiner.sh
-wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh
+rm ./PastaMiner.sh > /dev/null
+wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh > /dev/null
 echo "OK."
 echo "Starting latest version in few seconds..."
 countdown "00:00:05"
@@ -487,7 +489,7 @@ echo '							  / /_)/ _` / __| __/ _  |/    \| |  _ \ / _ \  __| '
 echo '							 / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |    '
 echo '							 \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|    '
 echo
-echo "Current version : b1.001"
+echo "Current version : $version"
 }
 
 clear
