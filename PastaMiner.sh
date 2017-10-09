@@ -6,7 +6,7 @@ echo
 #echo $xmrstakcpudir
 #echo $xmrstakcpudir
 
-version="b0.002"
+version="b0.003"
 
 function _check_updates () {
 echo
