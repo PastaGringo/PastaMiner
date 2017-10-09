@@ -12,7 +12,9 @@ echo "Currenlty no checking function..."
 echo "Downloading latest PastaMiner.sh version..."
 rm ./PastaMiner.sh
 wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh
-echo "Starting latest version..."
+echo "OK."
+echo "Starting latest version in few seconds..."
+countdown "00:00:05"
 bash ./PastaMiner.sh
 }
 
@@ -485,6 +487,7 @@ echo '							  / /_)/ _` / __| __/ _  |/    \| |  _ \ / _ \  __| '
 echo '							 / ___/ (_| \__ \ || (_| / /\/\ \ | | | |  __/ |    '
 echo '							 \/    \__,_|___/\__\__,_\/    \/_|_| |_|\___|_|    '
 echo
+echo "Current version : b1.001"
 }
 
 clear
