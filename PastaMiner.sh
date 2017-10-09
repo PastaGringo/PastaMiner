@@ -13,7 +13,7 @@ echo
 echo "Currenlty no checking function..."
 echo "Downloading latest PastaMiner.sh version..."
 rm ./PastaMiner.sh > /dev/null
-wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh > /dev/null
+wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh &> /dev/null
 echo "OK."
 echo "Starting latest version in few seconds..."
 chmod +x ./PastaMiner.sh
