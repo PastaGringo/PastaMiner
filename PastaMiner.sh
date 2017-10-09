@@ -16,6 +16,7 @@ rm ./PastaMiner.sh > /dev/null
 wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh > /dev/null
 echo "OK."
 echo "Starting latest version in few seconds..."
+chmod +x ./PastaMiner.sh
 countdown "00:00:05"
 bash ./PastaMiner.sh
 }
