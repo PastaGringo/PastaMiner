@@ -6,6 +6,16 @@ echo
 #echo $xmrstakcpudir
 #echo $xmrstakcpudir
 
+function _check_updates () {
+echo
+echo "Currenlty no checking function..."
+echo "Downloading latest PastaMiner.sh version..."
+rm ./PastaMiner.sh
+wget https://raw.githubusercontent.com/PastaGringo/PastaMiner/master/PastaMiner.sh
+echo "Starting latest version..."
+bash ./PastaMiner.sh
+}
+
 function countdown () {
 IFS=:
 set -- $*
@@ -26,10 +36,13 @@ if [ -f ./.flags/plex_stream_watcher ]; then
 	echo "Plex Streams Watcher ENABLED !"
 	echo
 	countdown "00:00:05"
+	_plex_streams_watcher stop
+	_main_menu
 else
 	echo
 	echo "Plex Streams Watcher DISABLED !"
 	echo
+	#_main_menu
 fi
 }
 
@@ -63,12 +76,14 @@ if [ "$1" == "start" ]; then
 	echo "Staring Plex stream watcher..."
 	touch ./.flags/plex_stream_watcher
 	echo "Plex Stream Watcher is ENABLED !"
+	_main_menu
 elif [ "$1" == "stop" ]; then
 	echo "Stopping Plex stream watcher..."
 	rm ./.flags/plex_stream_watcher
 	echo "Plex Stream Watcher is DISABLED !"
 else
 	echo "Invalid input for Plex Stream Watcher"
+	_main_menu
 fi
 }
 
@@ -203,6 +218,7 @@ echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
 echo "4) Enable Plex streams watcher"
+echo "5) Check updates (will overwrite local PastaMiner.sh with the latest available on git)"
 echo "0) Exit."
 echo
 read -p "What do you want do ? " choice
@@ -211,6 +227,7 @@ case "$choice" in
 	2 ) echo;_ask_manage_worker;;
 	3 ) _remove_pastaminer;;
 	4 ) _ask_plex_streams_watcher;;
+	5 ) _check_updates;;
 	0 ) echo "See you next time !";exit;;
 esac
 }
