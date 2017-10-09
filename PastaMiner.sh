@@ -6,6 +6,72 @@ echo
 #echo $xmrstakcpudir
 #echo $xmrstakcpudir
 
+function countdown () {
+IFS=:
+set -- $*
+secs=$(( ${1#0} * 3600 + ${2#0} * 60 + ${3#0} ))
+while [ $secs -gt 0 ]
+do
+	sleep 1 &
+	printf "\r%02d:%02d:%02d" $((secs/3600)) $(( (secs/60)%60)) $((secs%60))
+	secs=$(( $secs - 1 ))
+	wait
+done
+echo
+}
+
+function _check_plex_stream_watcher () {
+if [ -f ./.flags/plex_stream_watcher ]; then
+	echo
+	echo "Plex Streams Watcher ENABLED !"
+	echo
+	countdown "00:00:05"
+else
+	echo
+	echo "Plex Streams Watcher DISABLED !"
+	echo
+fi
+}
+
+function _ask_plex_streams_watcher () {
+#need plex token
+echo
+echo "Plex streams watch will suspend your workers if any Plex streams is detected."
+echo "You should enable it if you shared your Plex server with users, because mining consume a lot of CPU."
+echo "But for example, if ALL of your miners has 4 threads (max) dedicated and your CPU has 12cores, it should be fine."
+echo "What Plex stream watcher will do :"
+echo "> Check every X seconds if there are any streams :"
+echo "- if YES : stop all miners running."
+echo "- if NO : start all previous running miners."
+echo
+echo "1) Start Plex Stream Watcher"
+echo "2) Stop Plex Stream Watcher"
+echo "0) Main menu."
+echo
+read -p "Would you like to enable Plex Streams Watcher to all your miners ? " plex_stream_watcher_choice
+case "$plex_stream_watcher_choice" in
+	1 ) _plex_streams_watcher start;;
+	2 ) _plex_streams_watcher stop;;
+	0) _main_menu;;
+	* ) echo WRONG;;
+esac
+}
+
+function _plex_streams_watcher () {
+echo
+if [ "$1" == "start" ]; then
+	echo "Staring Plex stream watcher..."
+	touch ./.flags/plex_stream_watcher
+	echo "Plex Stream Watcher is ENABLED !"
+elif [ "$1" == "stop" ]; then
+	echo "Stopping Plex stream watcher..."
+	rm ./.flags/plex_stream_watcher
+	echo "Plex Stream Watcher is DISABLED !"
+else
+	echo "Invalid input for Plex Stream Watcher"
+fi
+}
+
 function _create_log_file () {
 if [ ! -d .flags ]; then
 	mkdir .flags
@@ -131,12 +197,12 @@ function _main_menu () {
 clear
 _show_ascii
 #_worker_status_from_main_menu
+_check_plex_stream_watcher
 _worker_status_widget
 echo "1) Configure PastaMiner (easy/advanced)"
 echo "2) Manage PastaMiner workers (start/stop/state/delete)"
 echo "3) Uninstall PastaMiner binaries and workers (could be reinstalled in 1mn)"
 echo "4) Enable Plex streams watcher"
-echo "5) Show active workers"
 echo "0) Exit."
 echo
 read -p "What do you want do ? " choice
@@ -144,7 +210,7 @@ case "$choice" in
 	1 ) echo;ask_configure_easy;;
 	2 ) echo;_ask_manage_worker;;
 	3 ) _remove_pastaminer;;
-	4 ) echo "Uninstall PastaMiner !";;
+	4 ) _ask_plex_streams_watcher;;
 	0 ) echo "See you next time !";exit;;
 esac
 }
